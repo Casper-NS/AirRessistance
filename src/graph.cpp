@@ -7,9 +7,9 @@ float map(float x, float in_min, float in_max, float out_min, float out_max)
 }
 
 //Draws the graph in the buffer
-void CreateGraph(SDL_Renderer *renderer, int &graph_width, int &graph_height, int &window_width, int &window_height)
+void CreateGraph(SDL_Renderer *renderer, float &graph_width, float &graph_height, int &window_width, int &window_height)
 {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 100, 255);
+    SDL_SetRenderDrawColor(renderer, 30, 30, 50, 50);
 
     int offsetX = window_width / 4;
     int offsetY = window_height - window_height/8;
@@ -32,7 +32,7 @@ void CreateGraph(SDL_Renderer *renderer, int &graph_width, int &graph_height, in
                             map(y, 0, graph_height, offsetY, 0));
     }
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 150, 80, 80, 200);
     SDL_RenderDrawLine(renderer, offsetX, offsetY, window_width, offsetY);
     SDL_RenderDrawLine(renderer, offsetX, offsetY, offsetX, 0);
 

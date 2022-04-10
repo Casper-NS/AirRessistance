@@ -42,12 +42,11 @@ int main(int argc, char **argv) {
         exit(-1);
     }
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     SDL_RenderSetLogicalSize(renderer, window_width, window_height);
 
-    int graph_width = 100;
-    int graph_height = 50;
-
+    float graph_width = 32;
+    float graph_height = 18; //round(graph_width*window_height/window_width);
 
     while (!done) {
         while (SDL_PollEvent(&events)) {
@@ -60,18 +59,19 @@ int main(int argc, char **argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         
+        //SDL_GetWindowSize(sdlWindow, &window_width, &window_height);
         CreateGraph(renderer, graph_width, graph_height, window_width, window_height);
         
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-        auto OldX = 0;
-        auto OldY = 0;
+        auto OldX = window_width/4;
+        auto OldY = window_height-window_height/8-map(graph_height-5, 0, graph_height, window_height-window_height/8, 0);
 
-        for (float x = -10; x < 10; x+=0.05f)
+        for (float x = 0; x < graph_width; x+=0.01f)
         {
-            auto NewX = map(x, -10, 10, window_width/4, window_width);
-            auto NewY = map(sin(x), -5, 5, 0, window_height);
-            SDL_RenderDrawPoint(renderer, NewX, NewY);
+            auto NewX = map(x, 0, graph_width, window_width/4, window_width);
+            auto NewY = map(sin(x), 0, graph_height, window_height-window_height/8, 0)-map(graph_height-5, 0, graph_height, window_height-window_height/8, 0);
+            SDL_RenderDrawLine(renderer, OldX, OldY, NewX, NewY);
             OldX = NewX;
             OldY = NewY;
         }
