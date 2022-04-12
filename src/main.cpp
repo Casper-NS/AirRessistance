@@ -1,14 +1,11 @@
-#include <sqlite3.h>
-#include "graph.h"
+#include "throwEqautions.h"
 #include <stdio.h>
-
-
 
 int main(int argc, char **argv) {
 
 
-    int window_width = 1920;
-    int window_height = 1080;
+    int window_width = 1280;
+    int window_height = 720;
     bool done = false;
 
     // Initialize SDL and check for error  
@@ -48,6 +45,8 @@ int main(int argc, char **argv) {
     float graph_width = 32;
     float graph_height = 18; //round(graph_width*window_height/window_width);
 
+    XYPlane plane(renderer, sdlWindow, graph_width, graph_height);
+
     while (!done) {
         while (SDL_PollEvent(&events)) {
             if (events.type == SDL_QUIT) {
@@ -59,18 +58,25 @@ int main(int argc, char **argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         
-        //SDL_GetWindowSize(sdlWindow, &window_width, &window_height);
-        CreateGraph(renderer, graph_width, graph_height, window_width, window_height);
+
+        int OffsetX = -200;
+        int OffsetY = -200;
+        plane.draw(renderer, plane.top_right, OffsetX, OffsetY);
+        
         
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-        auto OldX = window_width/4;
-        auto OldY = window_height-window_height/8-map(graph_height-5, 0, graph_height, window_height-window_height/8, 0);
+        //throwEqautions eq(renderer, plane, graph_width, graph_height, window_width, window_height);
+
+        //eq.XY_Euler();
+
+        auto OldX = window_width/2+OffsetX;
+        auto OldY = window_height/2- OffsetY - plane.map(graph_height-5, 0, graph_height, window_height/2 - OffsetY, 0);
 
         for (float x = 0; x < graph_width; x+=0.01f)
         {
-            auto NewX = map(x, 0, graph_width, window_width/4, window_width);
-            auto NewY = map(sin(x), 0, graph_height, window_height-window_height/8, 0)-map(graph_height-5, 0, graph_height, window_height-window_height/8, 0);
+            auto NewX = plane.map(x, 0, graph_width, window_width/2+OffsetX, window_width);
+            auto NewY = plane.map(sin(x), 0, graph_height, window_height/2-OffsetY, 0)-plane.map(graph_height-5, 0, graph_height, window_height/2 - OffsetY, 0);
             SDL_RenderDrawLine(renderer, OldX, OldY, NewX, NewY);
             OldX = NewX;
             OldY = NewY;
@@ -78,6 +84,7 @@ int main(int argc, char **argv) {
 
         SDL_RenderPresent(renderer);
         SDL_Delay(1000 / 60);
+        
     }
 
 
